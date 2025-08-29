@@ -2,7 +2,13 @@ import React from 'react';
 
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { LogOut } from 'lucide-react';
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton
+} from '@clerk/nextjs';
 
 const menus = [
   {
@@ -28,11 +34,12 @@ const NavItems = () => {
           </Link>
         ))}
         <div className="flex gap-2 items-center">
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <LogOut className="text-cta-gold" />
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
         </div>
       </div>
     </div>
