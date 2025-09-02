@@ -26,6 +26,8 @@ import { Textarea } from '@/components/ui/textarea';
 
 import { redirect } from 'next/navigation';
 import { createCompanion } from '@/lib/actions/companion.action';
+import { toast } from 'sonner';
+import { startTransition, useActionState, useEffect } from 'react';
 
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Companion is required.' }),
@@ -33,10 +35,14 @@ const formSchema = z.object({
   topic: z.string().min(1, { message: 'Topic is required.' }),
   voice: z.string().min(1, { message: 'Voice is required.' }),
   style: z.string().min(1, { message: 'Style is required.' }),
-  duration: z.number().min(1, { message: 'Duration is required.' })
+  duration: z.string().min(1, { message: 'Duration is required.' })
 });
 
 const CompanionForm = () => {
+  const [state, formAction, isPending] = useActionState(createCompanion, {
+    success: false,
+    message: ''
+  });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,18 +51,23 @@ const CompanionForm = () => {
       topic: '',
       voice: '',
       style: '',
-      duration: 15
+      duration: '15'
     }
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const res = await createCompanion(values);
-
-    if (res?.id) {
-      redirect(`/companions/${res.id}`);
-    } else {
-      redirect('/companions/new');
+  useEffect(() => {
+    if (state.success) {
+      toast.success(state.message);
+      form.reset();
+    } else if (state.message) {
+      toast.error(state.message);
     }
+  }, [state]);
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    startTransition(() => {
+      formAction({ ...values, duration: Number(values.duration) });
+    });
   };
 
   return (
@@ -199,7 +210,7 @@ const CompanionForm = () => {
           )}
         />
         <Button type="submit" className="w-full cursor-pointer">
-          Build Your Companion
+          {isPending ? 'Building...' : 'Build Your Companion'}
         </Button>
       </form>
     </Form>
