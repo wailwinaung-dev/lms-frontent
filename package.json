@@ -6,9 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
+    "@apollo/client": "^4.0.4",
+    "@apollo/client-integration-nextjs": "^0.13.0",
     "@clerk/nextjs": "^6.31.6",
     "@hookform/resolvers": "^5.2.1",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -29,6 +32,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@graphql-codegen/cli": "5.0.7",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -37,6 +41,10 @@
     "eslint-config-next": "15.5.2",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.7",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@graphql-codegen/typescript": "4.1.6",
+    "@graphql-codegen/typescript-document-nodes": "4.0.16",
+    "@graphql-codegen/flow": "3.0.1",
+    "@graphql-codegen/introspection": "4.0.3"
   }
 }
