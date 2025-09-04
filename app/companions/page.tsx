@@ -1,4 +1,5 @@
 import CompanionCard from '@/components/companion-card';
+import Loading from '@/components/loading';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -13,9 +14,9 @@ import { getClient } from '@/lib/ApolloClient';
 import { getSubjectColor } from '@/lib/utils';
 import { gql } from '@apollo/client';
 import { Search } from 'lucide-react';
-import React from 'react';
+import React, { Suspense } from 'react';
 
-const CompanionsPage = async () => {
+async function GetCompanions() {
   const client = await getClient();
 
   const { data } = await client.query<{ companions: CompanionConnection }>({
@@ -46,7 +47,20 @@ const CompanionsPage = async () => {
     `
   });
 
-  console.log('data >', JSON.stringify(data, null, 2));
+  return (
+    <>
+      {data?.companions?.edges?.map(({ node }: any) => (
+        <CompanionCard
+          key={node.id}
+          {...node}
+          color={getSubjectColor(node.subject)}
+        />
+      ))}
+    </>
+  );
+}
+
+const CompanionsPage = async () => {
   return (
     <main>
       <section className="flex justify-between items-between">
@@ -78,15 +92,11 @@ const CompanionsPage = async () => {
           </div>
         </div>
       </section>
-      <section className="grid grid-cols-3 gap-4">
-        {data?.companions?.edges?.map(({ node }: any) => (
-          <CompanionCard
-            key={node.id}
-            {...node}
-            color={getSubjectColor(node.subject)}
-          />
-        ))}
-      </section>
+      <Suspense fallback={<Loading />}>
+        <section className="grid grid-cols-3 gap-4">
+          <GetCompanions />
+        </section>
+      </Suspense>
     </main>
   );
 };
