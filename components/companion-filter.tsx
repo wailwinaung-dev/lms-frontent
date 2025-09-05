@@ -10,8 +10,9 @@ import {
 import { subjects } from '@/constants';
 import { Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
+import { useDebounce } from 'use-debounce';
 
 export interface CompanionFilterProps {
   filter?: string;
@@ -23,15 +24,18 @@ export default function CompanionsFilter({
 }: CompanionFilterProps) {
   const [filterText, setFilterText] = useState(filter || '');
   const [selectedSubject, setSelectedSubject] = useState(subject || '');
+
+  const [debouncedFilterText] = useDebounce(filterText, 500);
+
   const router = useRouter();
 
   // Handle filter and subject change
   useEffect(() => {
     const query = new URLSearchParams();
-    if (filterText) query.set('filter', filterText);
+    if (debouncedFilterText) query.set('filter', debouncedFilterText);
     if (selectedSubject) query.set('subject', selectedSubject);
     router.push(`/companions?${query.toString()}`);
-  }, [filterText, selectedSubject]);
+  }, [debouncedFilterText, selectedSubject]);
 
   // Clear filters
   const clearFilters = () => {
