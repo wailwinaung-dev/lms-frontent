@@ -1,6 +1,9 @@
 'use server';
 
 import { auth } from '@clerk/nextjs/server';
+import { CompanionConnection } from '@/generated/types';
+import { getClient } from '@/lib/ApolloClient';
+import { gql } from '@apollo/client';
 
 export async function createCompanion(
   prevState: any,
@@ -43,4 +46,58 @@ export async function createCompanion(
     success: true,
     message: `Companion "${data.data.createCompanion.name}" created successfully!`
   };
+}
+
+// Fetch companions with pagination
+//note: first, last are not used in the query yet
+export interface CompanionParams {
+  after?: string;
+  before?: string;
+  first?: number;
+  last?: number;
+  searchText?: string;
+  subject?: string;
+}
+export async function getCompanions({
+  after,
+  before,
+  first,
+  last,
+  searchText,
+  subject
+}: CompanionParams) {
+  const client = await getClient();
+
+  const query = gql`
+    query Companions($first: Int, $last: Int, $after: String, $before: String) {
+      companions(first: $first, last: $last, after: $after, before: $before) {
+        pageInfo {
+          startCursor
+          endCursor
+          hasPreviousPage
+          hasNextPage
+        }
+        edges {
+          cursor
+          node {
+            id
+            name
+            subject
+            topic
+            style
+            voice
+            duration
+            author
+          }
+        }
+      }
+    }
+  `;
+
+  const { data } = await client.query<{ companions: CompanionConnection }>({
+    query,
+    variables: { first, last, after, before }
+  });
+
+  return data?.companions;
 }
