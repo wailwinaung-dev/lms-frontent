@@ -55,7 +55,7 @@ export interface CompanionParams {
   before?: string;
   first?: number;
   last?: number;
-  searchText?: string;
+  filter?: string;
   subject?: string;
 }
 export async function getCompanions({
@@ -63,14 +63,28 @@ export async function getCompanions({
   before,
   first,
   last,
-  searchText,
+  filter,
   subject
 }: CompanionParams) {
   const client = await getClient();
 
   const query = gql`
-    query Companions($first: Int, $last: Int, $after: String, $before: String) {
-      companions(first: $first, last: $last, after: $after, before: $before) {
+    query Companions(
+      $first: Int
+      $last: Int
+      $after: String
+      $before: String
+      $filter: String
+      $subject: String
+    ) {
+      companions(
+        first: $first
+        last: $last
+        after: $after
+        before: $before
+        filter: $filter
+        subject: $subject
+      ) {
         pageInfo {
           startCursor
           endCursor
@@ -96,7 +110,7 @@ export async function getCompanions({
 
   const { data } = await client.query<{ companions: CompanionConnection }>({
     query,
-    variables: { first, last, after, before }
+    variables: { first, last, after, before, filter, subject }
   });
 
   return data?.companions;

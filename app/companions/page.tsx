@@ -1,6 +1,6 @@
 import CompanionCard from '@/components/companion-card';
 import CompanionsFilter from '@/components/companion-filter';
-import Loading from '@/components/loading';
+import Loading, { CompanionSkeletonLoading } from '@/components/loading';
 import Pagination from '@/components/pagination';
 
 import { CompanionParams, getCompanions } from '@/lib/actions/companion.action';
@@ -35,20 +35,25 @@ async function GetCompanions({ params }: { params: CompanionParams }) {
 }
 
 const CompanionsPage = async ({ searchParams }: SearchParams) => {
-  const { after, before, first, last, searchText, subject } =
-    await searchParams;
+  const { after, before, first, last, filter, subject } = await searchParams;
   const updatedParams = {
     after: after as string | undefined,
     before: before as string | undefined,
     first: first ? Number(first as string) : undefined,
     last: last ? Number(last as string) : undefined,
-    searchText: searchText as string | undefined,
+    filter: filter as string | undefined,
     subject: subject as string | undefined
   };
   return (
     <main>
-      <CompanionsFilter />
-      <Suspense fallback={<Loading />}>
+      <CompanionsFilter
+        filter={updatedParams.filter}
+        subject={updatedParams.subject}
+      />
+      <Suspense
+        key={JSON.stringify(updatedParams)}
+        fallback={<CompanionSkeletonLoading />}
+      >
         <GetCompanions params={updatedParams} />
       </Suspense>
     </main>
