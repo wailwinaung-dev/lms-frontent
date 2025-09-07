@@ -1,26 +1,65 @@
-import CompanionCard from '@/components/companion-card';
+'use client';
+
 import CompanionsFilter from '@/components/companion-filter';
-import Loading, { CompanionSkeletonLoading } from '@/components/loading';
+import { CompanionSkeletonLoading } from '@/components/loading';
 import Pagination from '@/components/pagination';
-
-import { CompanionParams, getCompanions } from '@/lib/actions/companion.action';
+import CompanionCard from '@/components/companion-card';
+import { getCompanions } from '@/lib/actions/companion.action';
 import { getSubjectColor } from '@/lib/utils';
+import { useSearchParams } from 'next/navigation';
 
-import React, { Suspense } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
+import { CompanionConnection } from '@/generated/types';
 
-async function GetCompanions({ params }: { params: CompanionParams }) {
-  const companions = await getCompanions(params);
+const CompanionsPage = () => {
+  const searchParams = useSearchParams();
+  const [companions, setCompanions] = useState<
+    CompanionConnection | undefined
+  >();
+  const [isPending, startTransaction] = useTransition();
+  const updatedParams = {
+    after: searchParams.get('after'),
+    before: searchParams.get('before'),
+    first: searchParams.get('first')
+      ? Number(searchParams.get('first'))
+      : undefined,
+    last: searchParams.get('last')
+      ? Number(searchParams.get('last'))
+      : undefined,
+    filter: searchParams.get('filter'),
+    subject: searchParams.get('subject')
+  };
+
+  useEffect(() => {
+    startTransaction(async () => {
+      const data = await getCompanions(updatedParams);
+      setCompanions(data);
+    });
+  }, [searchParams]);
+
   return (
-    <>
-      <section className="grid grid-cols-3 gap-4">
-        {companions?.edges?.map(({ node }: any) => (
-          <CompanionCard
-            key={node.id}
-            {...node}
-            color={getSubjectColor(node.subject)}
-          />
-        ))}
-      </section>
+    <main>
+      <CompanionsFilter
+        filter={updatedParams.filter}
+        subject={updatedParams.subject}
+      />
+
+      {isPending ? (
+        <CompanionSkeletonLoading />
+      ) : (
+        <section className="grid grid-cols-3 gap-4">
+          {companions?.edges?.map(({ node }: any) => (
+            <CompanionCard
+              key={node.id}
+              {...node}
+              color={getSubjectColor(node.subject)}
+            />
+          ))}
+        </section>
+      )}
+      {!isPending && companions?.edges?.length === 0 && (
+        <p className="text-center mt-10">No companions found.</p>
+      )}
       {companions?.pageInfo && (
         <Pagination
           startCursor={companions.pageInfo.startCursor}
@@ -30,32 +69,6 @@ async function GetCompanions({ params }: { params: CompanionParams }) {
           className="mb-10"
         />
       )}
-    </>
-  );
-}
-
-const CompanionsPage = async ({ searchParams }: SearchParams) => {
-  const { after, before, first, last, filter, subject } = await searchParams;
-  const updatedParams = {
-    after: after as string | undefined,
-    before: before as string | undefined,
-    first: first ? Number(first as string) : undefined,
-    last: last ? Number(last as string) : undefined,
-    filter: filter as string | undefined,
-    subject: subject as string | undefined
-  };
-  return (
-    <main>
-      <CompanionsFilter
-        filter={updatedParams.filter}
-        subject={updatedParams.subject}
-      />
-      <Suspense
-        key={JSON.stringify(updatedParams)}
-        fallback={<CompanionSkeletonLoading />}
-      >
-        <GetCompanions params={updatedParams} />
-      </Suspense>
     </main>
   );
 };

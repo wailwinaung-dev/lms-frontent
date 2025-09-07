@@ -13,10 +13,11 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { useDebounce } from 'use-debounce';
+import { InputMaybe, Scalars } from '@/generated/types';
 
 export interface CompanionFilterProps {
-  filter?: string;
-  subject?: string;
+  filter?: InputMaybe<Scalars['String']['input']>;
+  subject?: InputMaybe<Scalars['String']['input']>;
 }
 export default function CompanionsFilter({
   filter,
@@ -31,6 +32,7 @@ export default function CompanionsFilter({
 
   // Handle filter and subject change
   useEffect(() => {
+    if (!filterText && !selectedSubject) return;
     const query = new URLSearchParams();
     if (debouncedFilterText) query.set('filter', debouncedFilterText);
     if (selectedSubject) query.set('subject', selectedSubject);

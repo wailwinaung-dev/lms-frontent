@@ -100,15 +100,17 @@ export type Query = {
 
 
 export type QueryCompanionArgs = {
-  id: Scalars['Int']['input'];
+  id: Scalars['String']['input'];
 };
 
 
 export type QueryCompanionsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
+  filter?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  subject?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateCompanionInput = {

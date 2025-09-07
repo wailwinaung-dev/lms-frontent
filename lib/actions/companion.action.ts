@@ -1,7 +1,11 @@
 'use server';
 
 import { auth } from '@clerk/nextjs/server';
-import { CompanionConnection } from '@/generated/types';
+import {
+  CompanionConnection,
+  Companion,
+  QueryCompanionsArgs
+} from '@/generated/types';
 import { getClient } from '@/lib/ApolloClient';
 import { gql } from '@apollo/client';
 
@@ -50,14 +54,6 @@ export async function createCompanion(
 
 // Fetch companions with pagination
 //note: first, last are not used in the query yet
-export interface CompanionParams {
-  after?: string;
-  before?: string;
-  first?: number;
-  last?: number;
-  filter?: string;
-  subject?: string;
-}
 export async function getCompanions({
   after,
   before,
@@ -65,7 +61,7 @@ export async function getCompanions({
   last,
   filter,
   subject
-}: CompanionParams) {
+}: QueryCompanionsArgs) {
   const client = await getClient();
 
   const query = gql`
@@ -114,4 +110,30 @@ export async function getCompanions({
   });
 
   return data?.companions;
+}
+
+export async function getCompanion(id: string) {
+  const client = await getClient();
+
+  const query = gql`
+    query Companion($id: ID!) {
+      companion(id: $id) {
+        id
+        name
+        subject
+        topic
+        style
+        voice
+        duration
+        author
+      }
+    }
+  `;
+
+  const { data } = await client.query<{ companion: Companion }>({
+    query,
+    variables: { id }
+  });
+
+  return data?.companion;
 }
