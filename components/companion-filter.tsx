@@ -10,7 +10,7 @@ import {
 import { subjects } from '@/constants';
 import { Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
 import { useDebounce } from 'use-debounce';
 import { InputMaybe, Scalars } from '@/generated/types';
@@ -25,14 +25,17 @@ export default function CompanionsFilter({
 }: CompanionFilterProps) {
   const [filterText, setFilterText] = useState(filter || '');
   const [selectedSubject, setSelectedSubject] = useState(subject || '');
-
   const [debouncedFilterText] = useDebounce(filterText, 500);
+  const skipEffect = useRef(false);
 
   const router = useRouter();
 
   // Handle filter and subject change
   useEffect(() => {
-    if (!filterText && !selectedSubject) return;
+    if (skipEffect.current) {
+      skipEffect.current = false; // reset flag
+      return;
+    }
     const query = new URLSearchParams();
     if (debouncedFilterText) query.set('filter', debouncedFilterText);
     if (selectedSubject) query.set('subject', selectedSubject);
@@ -41,6 +44,8 @@ export default function CompanionsFilter({
 
   // Clear filters
   const clearFilters = () => {
+    skipEffect.current = true;
+
     setFilterText('');
     setSelectedSubject('');
     router.push('/companions');
