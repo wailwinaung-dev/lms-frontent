@@ -110,20 +110,6 @@ export default function Error({
           </p>
         </div>
 
-        {/* Error Details Card */}
-        {error.digest && (
-          <Card className="max-w-md mx-auto">
-            <CardContent className="p-4">
-              <p className="text-sm text-muted-foreground">
-                Error ID:{' '}
-                <code className="bg-muted px-2 py-1 rounded text-xs">
-                  {error.digest}
-                </code>
-              </p>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button onClick={reset} size="lg" className="min-w-[140px]">
