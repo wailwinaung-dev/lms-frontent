@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,7 +23,6 @@ import {
 import { subjects } from '@/constants';
 import { Textarea } from '@/components/ui/textarea';
 
-import { redirect } from 'next/navigation';
 import { createCompanion } from '@/lib/actions/companion.action';
 import { toast } from 'sonner';
 import { startTransition, useActionState, useEffect } from 'react';

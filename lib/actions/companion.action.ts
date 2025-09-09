@@ -1,45 +1,29 @@
 'use server';
 
 import { auth } from '@clerk/nextjs/server';
+import { Companion } from '@/graphql/generated/types';
+import { getClient } from '@/graphql/client';
 import {
-  CompanionConnection,
-  Companion,
-  QueryCompanionsArgs
-} from '@/generated/types';
-import { getClient } from '@/lib/ApolloClient';
-import { gql } from '@apollo/client';
+  GET_COMPANION,
+  GET_COMPANIONS
+} from '@/graphql/queries/companion-query';
+import { CREATE_COMPANION } from '@/graphql/mutations/comopanion-mutation';
+import { cache } from 'react';
 
 export async function createCompanion(
   prevState: any,
   formData: CreateCompanion
 ): Promise<ServerActionResponse> {
-  const { getToken } = await auth();
-  const token = await getToken();
-  const mutation = `
-  mutation CreateCompanion($createCompanionInput: CreateCompanionInput!) {
-    createCompanion(createCompanionInput: $createCompanionInput) {
-      id
-      name
-    }
-  }
-`;
-
   const variables = { createCompanionInput: formData };
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      query: mutation,
-      variables
-    })
-  });
+  const client = await getClient();
 
-  const data = await res.json();
-  console.log('Create Companion:', data);
-  if (data.errors) {
+  const { data, error } = await client.mutate<{ createCompanion: Companion }>({
+    mutation: CREATE_COMPANION,
+    variables,
+
+    refetchQueries: [{ query: GET_COMPANIONS }]
+  });
+  if (error) {
     return {
       success: false,
       message: 'Failed to create companion'
@@ -48,90 +32,15 @@ export async function createCompanion(
 
   return {
     success: true,
-    message: `Companion "${data.data.createCompanion.name}" created successfully!`
+    message: `Companion "${data?.createCompanion.name}" created successfully!`
   };
-}
-
-// Fetch companions with pagination
-//note: first, last are not used in the query yet
-export async function getCompanions({
-  after,
-  before,
-  first,
-  last,
-  filter,
-  subject
-}: QueryCompanionsArgs) {
-  const client = await getClient();
-
-  const query = gql`
-    query Companions(
-      $first: Int
-      $last: Int
-      $after: String
-      $before: String
-      $filter: String
-      $subject: String
-    ) {
-      companions(
-        first: $first
-        last: $last
-        after: $after
-        before: $before
-        filter: $filter
-        subject: $subject
-      ) {
-        pageInfo {
-          startCursor
-          endCursor
-          hasPreviousPage
-          hasNextPage
-        }
-        edges {
-          cursor
-          node {
-            id
-            name
-            subject
-            topic
-            style
-            voice
-            duration
-            author
-          }
-        }
-      }
-    }
-  `;
-
-  const { data } = await client.query<{ companions: CompanionConnection }>({
-    query,
-    variables: { first, last, after, before, filter, subject }
-  });
-
-  return data?.companions;
 }
 
 export async function getCompanion(id: string) {
   const client = await getClient();
 
-  const query = gql`
-    query Companion($id: ID!) {
-      companion(id: $id) {
-        id
-        name
-        subject
-        topic
-        style
-        voice
-        duration
-        author
-      }
-    }
-  `;
-
   const { data } = await client.query<{ companion: Companion }>({
-    query,
+    query: GET_COMPANION,
     variables: { id }
   });
 

@@ -1,6 +1,3 @@
-import { redirect } from 'next/navigation';
-import Image from 'next/image';
-import Link from 'next/link';
 import CompanionForm from '@/components/companion-form';
 
 const NewCompanion = async () => {

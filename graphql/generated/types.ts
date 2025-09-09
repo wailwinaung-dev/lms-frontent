@@ -94,13 +94,13 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
-  companion: Companion;
-  companions: CompanionConnection;
+  companion?: Maybe<Companion>;
+  companions?: Maybe<CompanionConnection>;
 };
 
 
 export type QueryCompanionArgs = {
-  id: Scalars['String']['input'];
+  id: Scalars['ID']['input'];
 };
 
 

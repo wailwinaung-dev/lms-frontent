@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from './ui/button';
 import { useDebounce } from 'use-debounce';
-import { InputMaybe, Scalars } from '@/generated/types';
+import { InputMaybe, Scalars } from '@/graphql/generated/types';
 
 export interface CompanionFilterProps {
   filter?: InputMaybe<Scalars['String']['input']>;

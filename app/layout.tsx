@@ -4,6 +4,7 @@ import './globals.css';
 import NavBar from '@/components/nav-bar';
 import { ClerkProvider } from '@clerk/nextjs';
 import { Toaster } from '@/components/ui/sonner';
+import { ApolloWrapper } from '@/graphql/apollo-wrapper';
 
 const bricolage = Bricolage_Grotesque({
   variable: '--font-bricolage',
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
   description: 'Real-time AI Teaching Platform'
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
@@ -25,7 +26,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${bricolage.variable} antialiased`}>
           <NavBar />
-          {children}
+          <ApolloWrapper>{children}</ApolloWrapper>
           <Toaster />
         </body>
       </html>
