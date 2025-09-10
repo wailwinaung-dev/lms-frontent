@@ -44,7 +44,6 @@ const CompanionComponent = ({
 
   useEffect(() => {
     const onCallStart = () => {
-      console.log('Call started');
       setCallStatus(CallStatus.ACTIVE);
     };
 

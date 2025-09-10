@@ -30,8 +30,6 @@ const CompanionsPage = ({
     }
   });
 
-  // console.log('Data from useQuery:', data, loading, error);
-
   return (
     <main>
       <CompanionsFilter

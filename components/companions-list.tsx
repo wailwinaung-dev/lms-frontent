@@ -25,7 +25,6 @@ const CompanionsList = ({
   classNames,
   sessionHistories
 }: CompanionsListProps) => {
-  console.log();
   return (
     <article className={cn('companion-list', classNames)}>
       <h2 className="font-bold text-3xl">{title}</h2>
