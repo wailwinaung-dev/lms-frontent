@@ -8,9 +8,11 @@ import {
 import { getClient } from '@/graphql/client';
 import {
   GET_COMPANION,
-  GET_COMPANIONS
+  GET_COMPANIONS,
+  GET_TOTAL_COUNT_BY_USER
 } from '@/graphql/queries/companion.query';
 import { CREATE_COMPANION } from '@/graphql/mutations/comopanion.mutation';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 
 export async function createCompanion(
   prevState: any,
@@ -68,3 +70,32 @@ export async function getCompanions({
 
   return data?.companions;
 }
+
+export const newCompanionPermissions = async () => {
+  const { userId, has } = await auth();
+
+  let limit = 0;
+
+  if (has({ plan: 'pro_companions' })) {
+    return true;
+  } else if (has({ feature: '3_active_companions' })) {
+    limit = 3;
+  } else if (has({ feature: '10_active_companions' })) {
+    limit = 10;
+  }
+
+  const client = await getClient();
+  const { data, error } = await client.query<{ totalCountByUser: number }>({
+    query: GET_TOTAL_COUNT_BY_USER
+  });
+
+  if (error) throw new Error(error.message);
+
+  const companionCount = data?.totalCountByUser || 0;
+
+  if (companionCount >= limit) {
+    return false;
+  } else {
+    return true;
+  }
+};

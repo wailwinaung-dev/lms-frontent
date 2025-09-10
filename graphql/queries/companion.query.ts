@@ -43,3 +43,9 @@ export const GET_COMPANION = gql`
   }
   ${COMPANION_FRAGMENT}
 `;
+
+export const GET_TOTAL_COUNT_BY_USER = gql`
+  query TotalCountByUser {
+    totalCountByUser
+  }
+`;

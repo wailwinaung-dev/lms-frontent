@@ -3,9 +3,9 @@ import React from 'react';
 
 const SubscriptionPage = () => {
   return (
-    <div>
+    <main className="items-center justify-center">
       <PricingTable />
-    </div>
+    </main>
   );
 };
 
