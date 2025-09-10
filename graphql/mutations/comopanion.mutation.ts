@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { COMPANION_FRAGMENT } from '../queries/companion.query';
+import { COMPANION_FRAGMENT } from '../fragements/fragements';
 
 export const CREATE_COMPANION = gql`
   mutation CreateCompanion($createCompanionInput: CreateCompanionInput!) {

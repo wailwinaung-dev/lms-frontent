@@ -146,6 +146,7 @@ export type QuerySessionHistoryArgs = {
 
 export type SessionHistory = {
   __typename?: 'SessionHistory';
+  Companion: Companion;
   /** The id of the companion */
   companion_id: Scalars['String']['output'];
   /** The creation date of the session history */

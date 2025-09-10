@@ -1,17 +1,6 @@
 import { gql } from '@apollo/client';
+import { COMPANION_FRAGMENT } from '../fragements/fragements';
 
-export const COMPANION_FRAGMENT = gql`
-  fragment CompanionFragment on Companion {
-    id
-    name
-    subject
-    topic
-    style
-    voice
-    duration
-    author
-  }
-`;
 export const GET_COMPANIONS = gql`
   query Companions(
     $first: Int

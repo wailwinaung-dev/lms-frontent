@@ -215,7 +215,7 @@ const CompanionComponent = ({
           })}
         </div>
 
-        <div className="transcript-fade" />
+        {messages && messages.length > 0 && <div className="transcript-fade" />}
       </section>
     </section>
   );

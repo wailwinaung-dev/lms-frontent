@@ -1,6 +1,10 @@
 'use server';
 
-import { Companion } from '@/graphql/generated/types';
+import {
+  Companion,
+  CompanionConnection,
+  QueryCompanionsArgs
+} from '@/graphql/generated/types';
 import { getClient } from '@/graphql/client';
 import {
   GET_COMPANION,
@@ -43,4 +47,24 @@ export async function getCompanion(id: string) {
   });
 
   return data?.companion;
+}
+
+// Fetch companions with pagination
+//note: first, last are not used in the query yet
+export async function getCompanions({
+  after,
+  before,
+  first,
+  last,
+  filter,
+  subject
+}: QueryCompanionsArgs) {
+  const client = await getClient();
+
+  const { data } = await client.query<{ companions: CompanionConnection }>({
+    query: GET_COMPANIONS,
+    variables: { first, last, after, before, filter, subject }
+  });
+
+  return data?.companions;
 }

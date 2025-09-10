@@ -5,25 +5,28 @@ import { CompanionSkeletonLoading } from '@/components/loading';
 import Pagination from '@/components/pagination';
 import CompanionCard from '@/components/companion-card';
 import { getSubjectColor } from '@/lib/utils';
-import { useSearchParams } from 'next/navigation';
 
-import React, { useEffect, useState, useTransition } from 'react';
+import React, { use } from 'react';
 import { CompanionConnection } from '@/graphql/generated/types';
 import { useQuery } from '@apollo/client/react';
 import { GET_COMPANIONS } from '@/graphql/queries/companion.query';
 
-const CompanionsPage = () => {
-  const searchParams = useSearchParams();
+const CompanionsPage = ({
+  searchParams: filteredSearchParams
+}: SearchParams) => {
+  const { first, last, after, before, filter, subject } =
+    use(filteredSearchParams);
+
   const { loading, error, data } = useQuery<{
     companions: CompanionConnection;
   }>(GET_COMPANIONS, {
     variables: {
-      first: searchParams.get('first'),
-      last: searchParams.get('last'),
-      after: searchParams.get('after'),
-      before: searchParams.get('before'),
-      filter: searchParams.get('filter'),
-      subject: searchParams.get('subject')
+      first,
+      last,
+      after,
+      before,
+      filter,
+      subject
     }
   });
 
@@ -32,8 +35,8 @@ const CompanionsPage = () => {
   return (
     <main>
       <CompanionsFilter
-        filter={searchParams.get('filter')}
-        subject={searchParams.get('subject')}
+        filter={filter as string | undefined}
+        subject={subject as string | undefined}
       />
 
       {loading ? (
