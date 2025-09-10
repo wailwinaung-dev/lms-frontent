@@ -131,3 +131,37 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the project.
+
+## 📂 Project Structure
+
+```bash
+├── app/                  # Next.js App Router pages & layouts
+│   ├── companions/       # Companion-related routes
+│   │   ├── [id]/         # Dynamic companion page
+│   │   └── new/          # Create companion
+│   ├── my-journey/       # User journey page
+│   ├── sign-in/[[...]]   # Clerk sign-in routes
+│   └── subscription/     # Subscription management
+│
+├── components/           # Reusable UI components
+│   └── ui/               # shadcn/ui components
+│
+├── constants/            # Static values & config
+│
+├── graphql/              # GraphQL setup
+│   ├── fragments/        # GQL fragments
+│   ├── generated/        # Auto-generated codegen types
+│   ├── mutations/        # Mutation queries
+│   └── queries/          # Query documents
+│
+├── lib/                  # Utilities & server actions
+│   └── actions/
+│
+├── public/               # Static assets
+│   ├── icons/
+│   ├── images/
+│   └── readme/
+│
+└── types/                # Shared TypeScript types
+
+```
