@@ -30,7 +30,7 @@ const Page = async () => {
         <CompanionsList
           title="Recent completed session"
           classNames="w-2/3 max-lg:w-full"
-          companions={recentSessions}
+          sessionHistories={recentSessions}
         />
         <CTA />
       </section>

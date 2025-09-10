@@ -120,7 +120,9 @@ export type Query = {
   __typename?: 'Query';
   companion?: Maybe<Companion>;
   companions?: Maybe<CompanionConnection>;
+  companionsByUser?: Maybe<Array<Companion>>;
   sessionHistories: Array<SessionHistory>;
+  sessionHistoriesByUser: Array<SessionHistory>;
   sessionHistory: SessionHistory;
 };
 
