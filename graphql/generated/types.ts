@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTime: { input: any; output: any; }
 };
 
 export type Companion = {
@@ -62,11 +63,19 @@ export type CreateCompanionInput = {
   voice: Scalars['String']['input'];
 };
 
+export type CreateSessionHistoryInput = {
+  /** Companion id */
+  companion_id: Scalars['ID']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createCompanion: Companion;
+  createSessionHistory: SessionHistory;
   removeCompanion: Companion;
+  removeSessionHistory: SessionHistory;
   updateCompanion: Companion;
+  updateSessionHistory: SessionHistory;
 };
 
 
@@ -75,13 +84,28 @@ export type MutationCreateCompanionArgs = {
 };
 
 
+export type MutationCreateSessionHistoryArgs = {
+  createSessionHistoryInput: CreateSessionHistoryInput;
+};
+
+
 export type MutationRemoveCompanionArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationRemoveSessionHistoryArgs = {
   id: Scalars['Int']['input'];
 };
 
 
 export type MutationUpdateCompanionArgs = {
   updateCompanionInput: UpdateCompanionInput;
+};
+
+
+export type MutationUpdateSessionHistoryArgs = {
+  updateSessionHistoryInput: UpdateSessionHistoryInput;
 };
 
 export type PageInfo = {
@@ -96,6 +120,8 @@ export type Query = {
   __typename?: 'Query';
   companion?: Maybe<Companion>;
   companions?: Maybe<CompanionConnection>;
+  sessionHistories: Array<SessionHistory>;
+  sessionHistory: SessionHistory;
 };
 
 
@@ -113,6 +139,23 @@ export type QueryCompanionsArgs = {
   subject?: InputMaybe<Scalars['String']['input']>;
 };
 
+
+export type QuerySessionHistoryArgs = {
+  id: Scalars['Int']['input'];
+};
+
+export type SessionHistory = {
+  __typename?: 'SessionHistory';
+  /** The id of the companion */
+  companion_id: Scalars['String']['output'];
+  /** The creation date of the session history */
+  createdAt: Scalars['DateTime']['output'];
+  /** The id of the session history */
+  id: Scalars['String']['output'];
+  /** The id of the user */
+  user_id: Scalars['String']['output'];
+};
+
 export type UpdateCompanionInput = {
   /** The duration of the companion */
   duration?: InputMaybe<Scalars['Int']['input']>;
@@ -127,4 +170,10 @@ export type UpdateCompanionInput = {
   topic?: InputMaybe<Scalars['String']['input']>;
   /** The voice of the companion */
   voice?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateSessionHistoryInput = {
+  /** Companion id */
+  companion_id?: InputMaybe<Scalars['ID']['input']>;
+  id: Scalars['Int']['input'];
 };

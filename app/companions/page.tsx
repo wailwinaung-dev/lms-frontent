@@ -10,7 +10,7 @@ import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState, useTransition } from 'react';
 import { CompanionConnection } from '@/graphql/generated/types';
 import { useQuery } from '@apollo/client/react';
-import { GET_COMPANIONS } from '@/graphql/queries/companion-query';
+import { GET_COMPANIONS } from '@/graphql/queries/companion.query';
 
 const CompanionsPage = () => {
   const searchParams = useSearchParams();

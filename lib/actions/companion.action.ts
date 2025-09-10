@@ -1,14 +1,12 @@
 'use server';
 
-import { auth } from '@clerk/nextjs/server';
 import { Companion } from '@/graphql/generated/types';
 import { getClient } from '@/graphql/client';
 import {
   GET_COMPANION,
   GET_COMPANIONS
-} from '@/graphql/queries/companion-query';
-import { CREATE_COMPANION } from '@/graphql/mutations/comopanion-mutation';
-import { cache } from 'react';
+} from '@/graphql/queries/companion.query';
+import { CREATE_COMPANION } from '@/graphql/mutations/comopanion.mutation';
 
 export async function createCompanion(
   prevState: any,
